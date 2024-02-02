@@ -4,14 +4,15 @@
 #include "a_sensor_adapter.hpp"
 #include <Arduino.h>
 
-#define VH400_ADC_PIN A3
-#define VH400_ENABLE_PIN 22
+#include <vh400.hpp>
 
 class SensorVh400Adapter : public ASensorAdapter
 {
 private:
+    Vh400 vh400 = 0;
+
 public:
-    SensorVh400Adapter();
+    SensorVh400Adapter(const uint8_t enable_pin, uint8_t adc_pin);
     ~SensorVh400Adapter();
 
     int GetStartupTime() override;

@@ -1,5 +1,5 @@
 #include "sensor_controller.hpp"
-#include <memory.h>
+// #include <memory.h>
 #include <Arduino.h>
 
 SensorController::SensorController()
@@ -73,7 +73,7 @@ int SensorController::TimeUntillNextMeasurement()
     {
         unsigned long frequency = GetFrequency(this->sensors[i]->GetMeasurementType());
         // Check if this type of sensor needs to be measured
-        if (frequency == -1)
+        if (frequency == 0)
         {
             continue;
         }

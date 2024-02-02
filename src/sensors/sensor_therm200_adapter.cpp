@@ -1,8 +1,13 @@
 #include "sensors/sensor_therm200_adapter.hpp"
 
-SensorTherm200Adapter::SensorTherm200Adapter() : ASensorAdapter(THERM200_ENABLE_PIN)
+const int kStartUpTime = 2000;
+
+SensorTherm200Adapter::SensorTherm200Adapter(uint8_t enable_pin, uint8_t adc_pin) : ASensorAdapter(enable_pin)
 {
+    this->start_up_time = kStartUpTime;
     this->measurement_type = MeasurementType::kMeasurementTypeTemperature;
+
+    this->therm200 = Therm200(adc_pin);
 }
 
 SensorTherm200Adapter::~SensorTherm200Adapter()
@@ -11,23 +16,20 @@ SensorTherm200Adapter::~SensorTherm200Adapter()
 
 int SensorTherm200Adapter::GetStartupTime()
 {
-    return 4000;
+    return this->start_up_time;
 }
 
 bool SensorTherm200Adapter::StartMeasurement()
 {
-    // Start taking average over periode
     return true;
 }
 
 bool SensorTherm200Adapter::IsMeasurementFinnished()
 {
-    // Return true when x amount of measurements have been taken
     return true;
 }
 
 float SensorTherm200Adapter::GetMeasurement()
 {
-    // return 1.0f;
-    return analogRead(THERM200_ADC_PIN);
+    return therm200.Measure();
 }

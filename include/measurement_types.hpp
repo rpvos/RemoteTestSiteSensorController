@@ -1,7 +1,8 @@
 #if !defined(MEASUREMENT_TYPES_HPP_)
 #define MEASUREMENT_TYPES_HPP_
 
-#include <type_traits>
+// #include <type_traits>
+#include <Arduino.h>
 
 enum class MeasurementType
 {
@@ -19,12 +20,20 @@ enum class MeasurementType
 class MeasurementTypeHelper
 {
 public:
+    // // Helper function for finding the amount of measurementTypes
+    // template <typename Enumeration>
+    // static constexpr auto as_integer(Enumeration const value)
+    //     -> typename std::underlying_type<Enumeration>::type
+    // {
+    //     return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+    // }
+
     // Helper function for finding the amount of measurementTypes
     template <typename Enumeration>
-    static constexpr auto as_integer(Enumeration const value)
-        -> typename std::underlying_type<Enumeration>::type
+    static constexpr auto as_integer(Enumeration const value) -> int
+    // -> typename std::underlying_type<Enumeration>::type
     {
-        return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+        return static_cast<int>(value);
     }
 };
 

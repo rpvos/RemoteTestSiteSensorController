@@ -4,16 +4,13 @@
 #include "a_sensor_adapter.hpp"
 #include <therm200.hpp>
 
-#define THERM200_ADC_PIN A0
-#define THERM200_ENABLE_PIN 23
-
 class SensorTherm200Adapter : public ASensorAdapter
 {
 private:
-    Therm200 therm200 = Therm200(THERM200_ADC_PIN);
+    Therm200 therm200 = 0;
 
 public:
-    SensorTherm200Adapter();
+    SensorTherm200Adapter(uint8_t enable_pin, uint8_t adc_pin);
     ~SensorTherm200Adapter();
 
     int GetStartupTime() override;

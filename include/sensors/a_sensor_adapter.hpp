@@ -10,10 +10,11 @@ protected:
     MeasurementType measurement_type;
     unsigned long time_last_measurement;
     int enable_pin;
+    int start_up_time;
 
 public:
     ASensorAdapter();
-    ASensorAdapter(int enable_pin);
+    ASensorAdapter(const int enable_pin);
     ~ASensorAdapter();
     void Enable();
     void Disable();

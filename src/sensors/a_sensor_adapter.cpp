@@ -7,14 +7,16 @@ ASensorAdapter::ASensorAdapter()
     this->measurement_type = MeasurementType::kMeasurementTypeUndefined;
     this->time_last_measurement = 0;
     this->enable_pin = -1;
+    this->start_up_time = 0;
     Disable();
 }
 
-ASensorAdapter::ASensorAdapter(int enable_pin)
+ASensorAdapter::ASensorAdapter(const int enable_pin)
 {
     this->measurement_type = MeasurementType::kMeasurementTypeUndefined;
     this->time_last_measurement = 0;
     this->enable_pin = enable_pin;
+    this->start_up_time = 0;
     Disable();
 }
 
