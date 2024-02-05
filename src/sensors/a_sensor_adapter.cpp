@@ -1,22 +1,24 @@
 #include "sensors/a_sensor_adapter.hpp"
 #include <Arduino.h>
-#include "sensors/a_sensor_adapter.hpp"
 
 ASensorAdapter::ASensorAdapter()
 {
-    this->measurement_type = MeasurementType::kMeasurementTypeUndefined;
     this->time_last_measurement = 0;
-    this->enable_pin = -1;
+    this->measurement_types = nullptr;
+    this->measurement_amount = 0;
+    this->enable_pin = 0;
     this->start_up_time = 0;
     Disable();
 }
 
-ASensorAdapter::ASensorAdapter(const int enable_pin)
+ASensorAdapter::ASensorAdapter(const int enable_pin, const MeasurementType *measurement_types, const size_t measurement_amount, const int start_up_time)
 {
-    this->measurement_type = MeasurementType::kMeasurementTypeUndefined;
     this->time_last_measurement = 0;
+
     this->enable_pin = enable_pin;
-    this->start_up_time = 0;
+    this->measurement_types = measurement_types;
+    this->measurement_amount = measurement_amount;
+    this->start_up_time = start_up_time;
     Disable();
 }
 
@@ -29,19 +31,47 @@ unsigned long ASensorAdapter::GetTimeLastMeasurement()
     return this->time_last_measurement;
 }
 
-MeasurementType ASensorAdapter::GetMeasurementType()
+bool ASensorAdapter::GetMeasurementTypes(MeasurementType *measurement_types)
 {
-    return this->measurement_type;
+    if (measurement_types != nullptr)
+    {
+        for (size_t i = 0; i < this->measurement_amount; i++)
+        {
+            measurement_types[i] = this->measurement_types[i];
+        }
+        return true;
+    }
+
+    return false;
+}
+
+size_t ASensorAdapter::GetMeasurementAmount()
+{
+    return this->measurement_amount;
+}
+
+bool GetMeasurements(float *measurements)
+{
+    return false;
 }
 
 int ASensorAdapter::GetStartupTime()
 {
-    return 0;
+    return start_up_time;
+}
+
+void ASensorAdapter::SetTimeLastMeasurement(unsigned long time)
+{
+    this->time_last_measurement = time;
 }
 
 void ASensorAdapter::Enable()
 {
-    this->time_last_measurement = millis();
+    digitalWrite(enable_pin, HIGH);
+}
+
+void ASensorAdapter::Disable()
+{
     digitalWrite(enable_pin, HIGH);
 }
 
@@ -55,12 +85,7 @@ bool ASensorAdapter::IsMeasurementFinnished()
     return false;
 }
 
-float ASensorAdapter::GetMeasurement()
+bool ASensorAdapter::GetMeasurements(float *measurements)
 {
-    return 0;
-}
-
-void ASensorAdapter::Disable()
-{
-    digitalWrite(enable_pin, HIGH);
+    return false;
 }

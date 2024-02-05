@@ -1,22 +1,16 @@
 #include "sensors/sensor_therm200_adapter.hpp"
 
-const int kStartUpTime = 2000;
+const int kStartUpTime = 1000;
 
-SensorTherm200Adapter::SensorTherm200Adapter(uint8_t enable_pin, uint8_t adc_pin) : ASensorAdapter(enable_pin)
+const MeasurementType kMeasurementTypes[] = {MeasurementType::kMeasurementTypeTemperature};
+
+SensorTherm200Adapter::SensorTherm200Adapter(uint8_t enable_pin, uint8_t adc_pin, uint8_t adc_resolution, uint8_t reference_voltage) : ASensorAdapter(enable_pin, kMeasurementTypes, sizeof(kMeasurementTypes) / sizeof(MeasurementType), kStartUpTime)
 {
-    this->start_up_time = kStartUpTime;
-    this->measurement_type = MeasurementType::kMeasurementTypeTemperature;
-
-    this->therm200 = Therm200(adc_pin);
+    this->therm200 = Therm200(adc_pin, reference_voltage, adc_resolution);
 }
 
 SensorTherm200Adapter::~SensorTherm200Adapter()
 {
-}
-
-int SensorTherm200Adapter::GetStartupTime()
-{
-    return this->start_up_time;
 }
 
 bool SensorTherm200Adapter::StartMeasurement()
@@ -29,7 +23,14 @@ bool SensorTherm200Adapter::IsMeasurementFinnished()
     return true;
 }
 
-float SensorTherm200Adapter::GetMeasurement()
+bool SensorTherm200Adapter::GetMeasurements(float *measurements)
 {
-    return therm200.Measure();
+    float measurement = therm200.Measure();
+    if (measurements != nullptr)
+    {
+        measurements[0] = measurement;
+        return true;
+    }
+
+    return false;
 }

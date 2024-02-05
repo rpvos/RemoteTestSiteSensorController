@@ -12,13 +12,12 @@ private:
     Vh400 vh400 = 0;
 
 public:
-    SensorVh400Adapter(const uint8_t enable_pin, uint8_t adc_pin);
+    SensorVh400Adapter(const uint8_t enable_pin, uint8_t adc_pin, uint8_t adc_resolution, uint8_t reference_voltage);
     ~SensorVh400Adapter();
 
-    int GetStartupTime() override;
     bool StartMeasurement() override;
     bool IsMeasurementFinnished() override;
-    float GetMeasurement() override;
+    bool GetMeasurements(float *measurements) override;
 };
 
 #endif // SENSOR_VH400_ADAPTER_HPP_

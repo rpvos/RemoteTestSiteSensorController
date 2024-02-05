@@ -10,13 +10,12 @@ private:
     Therm200 therm200 = 0;
 
 public:
-    SensorTherm200Adapter(uint8_t enable_pin, uint8_t adc_pin);
+    SensorTherm200Adapter(uint8_t enable_pin, uint8_t adc_pin, uint8_t adc_resolution, uint8_t reference_voltage);
     ~SensorTherm200Adapter();
 
-    int GetStartupTime() override;
     bool StartMeasurement() override;
     bool IsMeasurementFinnished() override;
-    float GetMeasurement() override;
+    bool GetMeasurements(float *measurements) override;
 };
 
 #endif // SENSOR_THERM200_ADAPTER_HPP_

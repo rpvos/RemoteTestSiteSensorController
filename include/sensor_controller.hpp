@@ -25,20 +25,24 @@ public:
      * @brief Function used to determine if measurements need to be taken and if not when they do need to be taken.
      * Function automatically sets current sensor to the sensor that needs to measure.
      *
-     * @return int
+     * @return unsigned long in milliseconds
      */
-    int TimeUntillNextMeasurement();
+    unsigned long TimeUntillNextMeasurement();
 
     int GetSensorStartupTime();
     void EnableSensor();
-    void StartMeasurement();
+    bool StartMeasurement();
     bool IsMeasurementFinnished();
-    float GetMeasurement();
-    MeasurementType GetMeasurementType();
+
+    size_t GetMeasurementAmount();
+    bool GetMeasurements(float *measurements);
+    bool GetMeasurementTypes(MeasurementType *measurement_types);
     void DisableSensor();
 
     unsigned long GetFrequency(MeasurementType measurement_type);
     void SetFrequency(MeasurementType measurement_type, unsigned long frequency);
+
+    void UpdateTimeLastMeasurement();
 };
 
 #endif // A_SENSOR_CONTROLLLER_HPP_

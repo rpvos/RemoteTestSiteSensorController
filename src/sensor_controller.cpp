@@ -10,7 +10,7 @@ SensorController::SensorController()
         this->frequencies[i] = 0;
     }
 
-    this->amount_of_sensors = amount_of_sensors;
+    this->amount_of_sensors = 0;
 }
 
 SensorController::~SensorController()
@@ -49,11 +49,11 @@ void SensorController::AddSensor(ASensorAdapter *new_sensors[], size_t size)
     // Check if memory allocation was successful
     if (sensors == NULL)
     {
-        Serial.print("Out of storage");
+        // Serial.print("Out of storage");
         abort();
     }
     // Add new transitions, avoiding duplicates
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < size; ++i)
     {
         if (!IsDuplicate(new_sensors[i], sensors, amount_of_sensors) &&
             !IsDuplicate(new_sensors[i], new_sensors, i))
@@ -64,14 +64,31 @@ void SensorController::AddSensor(ASensorAdapter *new_sensors[], size_t size)
     }
 }
 
-int SensorController::TimeUntillNextMeasurement()
+unsigned long SensorController::TimeUntillNextMeasurement()
 {
-    unsigned long earliest_next_measurement = 0;
+    // TODO: add check for loop
+    unsigned long earliest_next_measurement = ~0ul;
     const unsigned long now = millis();
 
     for (size_t i = 0; i < this->amount_of_sensors; i++)
     {
-        unsigned long frequency = GetFrequency(this->sensors[i]->GetMeasurementType());
+        size_t measurement_amount = this->sensors[i]->GetMeasurementAmount();
+        MeasurementType types[measurement_amount];
+        if (!this->sensors[i]->GetMeasurementTypes(types))
+        {
+            continue;
+        }
+
+        unsigned long frequency = 0;
+        for (size_t j = 0; j < measurement_amount; j++)
+        {
+            unsigned long temp = GetFrequency(types[j]);
+            if ((frequency > temp || frequency == 0) && temp != 0)
+            {
+                frequency = temp;
+            }
+        }
+
         // Check if this type of sensor needs to be measured
         if (frequency == 0)
         {
@@ -83,6 +100,7 @@ int SensorController::TimeUntillNextMeasurement()
         if (time_last_measurement == 0)
         {
             current_sensor_index = i;
+
             return 0;
         }
 
@@ -91,17 +109,12 @@ int SensorController::TimeUntillNextMeasurement()
         if (time_since_measurement > frequency)
         {
             current_sensor_index = i;
+
             return 0;
         }
 
-        // Initialise value if not initialised
-        if (!earliest_next_measurement)
-        {
-            earliest_next_measurement = frequency - time_since_measurement;
-            current_sensor_index = i;
-        }
         // Check if earliest next measurement is bigger then this sensor next predicted measurement
-        else if (frequency - time_since_measurement < earliest_next_measurement)
+        if (frequency - time_since_measurement < earliest_next_measurement)
         {
             // Assign this value as new earliest measurement
             earliest_next_measurement = frequency - time_since_measurement;
@@ -122,9 +135,9 @@ void SensorController::EnableSensor()
     sensors[current_sensor_index]->Enable();
 }
 
-void SensorController::StartMeasurement()
+bool SensorController::StartMeasurement()
 {
-    sensors[current_sensor_index]->StartMeasurement();
+    return sensors[current_sensor_index]->StartMeasurement();
 }
 
 bool SensorController::IsMeasurementFinnished()
@@ -132,14 +145,19 @@ bool SensorController::IsMeasurementFinnished()
     return sensors[current_sensor_index]->IsMeasurementFinnished();
 }
 
-float SensorController::GetMeasurement()
+size_t SensorController::GetMeasurementAmount()
 {
-    return sensors[current_sensor_index]->GetMeasurement();
+    return sensors[current_sensor_index]->GetMeasurementAmount();
 }
 
-MeasurementType SensorController::GetMeasurementType()
+bool SensorController::GetMeasurements(float *measurements)
 {
-    return sensors[current_sensor_index]->GetMeasurementType();
+    return sensors[current_sensor_index]->GetMeasurements(measurements);
+}
+
+bool SensorController::GetMeasurementTypes(MeasurementType *measurement_types)
+{
+    return sensors[current_sensor_index]->GetMeasurementTypes(measurement_types);
 }
 
 void SensorController::DisableSensor()
@@ -168,14 +186,37 @@ void SensorController::SetFrequency(MeasurementType measurement_type, unsigned l
     frequencies[MeasurementTypeHelper::as_integer(measurement_type)] = frequency;
 }
 
+void SensorController::UpdateTimeLastMeasurement()
+{
+    this->sensors[current_sensor_index]->SetTimeLastMeasurement(millis());
+}
+
 bool SensorController::IsDuplicate(ASensorAdapter *new_sensor, ASensorAdapter *sensors[], int array_size)
 {
     for (int i = 0; i < array_size; ++i)
     {
-        if (sensors[i]->GetMeasurementType() == new_sensor->GetMeasurementType() &&
+        size_t measurement_amount = sensors[i]->GetMeasurementAmount();
+        size_t new_measurement_amount = new_sensor->GetMeasurementAmount();
+        // Check basic atributes
+        if (
+            measurement_amount == new_measurement_amount &&
             sensors[i]->GetStartupTime() == new_sensor->GetStartupTime() &&
             sensors[i]->GetTimeLastMeasurement() == new_sensor->GetTimeLastMeasurement())
         {
+            // Check measurement types
+            MeasurementType measurement_types[measurement_amount];
+            MeasurementType new_measurement_types[new_measurement_amount];
+            sensors[i]->GetMeasurementTypes(measurement_types);
+            new_sensor->GetMeasurementTypes(new_measurement_types);
+            for (size_t j = 0; j < measurement_amount && j < new_measurement_amount; j++)
+            {
+                // If measurement type is not the same the objects are different
+                if (measurement_types[j] != new_measurement_types[j])
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
     }
