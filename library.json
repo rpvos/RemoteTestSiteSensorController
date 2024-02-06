@@ -1,0 +1,35 @@
+{
+    "name": "Remote test site sensor controller",
+    "version": "1.0.0",
+    "description": "Remote test site sensor controller containing all sensors being used in the project.",
+    "keywords": "",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rpvos/RemoteTestSiteSensorController.git"
+    },
+    "authors": [
+        {
+            "name": "Rik Vos",
+            "email": "Rik.Vos01@gmail.com",
+            "url": "http://rpvos.nl"
+        }
+    ],
+    "export": {
+        "exclude": [
+            "test/*"
+        ]
+    },
+    "license": "GNU 3",
+    "homepage": "http://rpvos.nl",
+    "dependencies": {
+        "VH400": "https://github.com/rpvos/VH400.git",
+        "Therm200": "https://github.com/rpvos/Therm200.git",
+        "MurataSoilSensor": "https://github.com/rpvos/MurataSoilSensor.git"
+    },
+    "frameworks": [
+        "Arduino"
+    ],
+    "platforms": [
+        "atmelavr"
+    ]
+}
