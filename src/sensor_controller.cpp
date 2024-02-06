@@ -2,6 +2,8 @@
 // #include <memory.h>
 #include <Arduino.h>
 
+const unsigned long kMaxValueUnsignedLong = ~0ul;
+
 SensorController::SensorController()
 {
     this->frequencies = new unsigned long[MeasurementTypeHelper::as_integer(MeasurementType::kCount)];
@@ -66,12 +68,13 @@ void SensorController::AddSensor(ASensorAdapter *new_sensors[], size_t size)
 
 unsigned long SensorController::TimeUntillNextMeasurement()
 {
-    // TODO: add check for loop
-    unsigned long earliest_next_measurement = ~0ul;
+    // Initiate with bigest value of unsigned long
+    unsigned long earliest_next_measurement = kMaxValueUnsignedLong;
     const unsigned long now = millis();
 
     for (size_t i = 0; i < this->amount_of_sensors; i++)
     {
+        // Get all frequencies by measurement type
         size_t measurement_amount = this->sensors[i]->GetMeasurementAmount();
         MeasurementType types[measurement_amount];
         if (!this->sensors[i]->GetMeasurementTypes(types))
@@ -79,10 +82,13 @@ unsigned long SensorController::TimeUntillNextMeasurement()
             continue;
         }
 
+        // Assign shortest measurement frequency of sensor types
         unsigned long frequency = 0;
         for (size_t j = 0; j < measurement_amount; j++)
         {
             unsigned long temp = GetFrequency(types[j]);
+            // If temp is 0, this type doesnt need te be measured
+            // If frequency is 0, this is the first found freqeuncy to which we can compare it
             if ((frequency > temp || frequency == 0) && temp != 0)
             {
                 frequency = temp;
@@ -104,7 +110,13 @@ unsigned long SensorController::TimeUntillNextMeasurement()
             return 0;
         }
 
-        unsigned long time_since_measurement = now - time_last_measurement;
+        // Check for value overflow
+        if (now < time_last_measurement)
+        {
+        }
+
+        // Calculate time between now and time_last_measurement
+        unsigned long time_since_measurement = now + (kMaxValueUnsignedLong - time_last_measurement) + 1;
         // Time exeeded time frequency
         if (time_since_measurement > frequency)
         {
