@@ -31,5 +31,13 @@
     ],
     "platforms": [
         "atmelavr"
+    ],
+    "headers": [
+        "measurement_types.hpp",
+        "sensor_controller.hpp",
+        "sensors/a_sensor_adapter.hpp",
+        "sensors/sensor_murata_soil_sensor_adapter.hpp",
+        "sensors/sensor_therm200_adapter.hpp",
+        "sensors/sensor_vh400_adapter.hpp"
     ]
 }
