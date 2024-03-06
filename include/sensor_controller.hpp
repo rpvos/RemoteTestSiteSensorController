@@ -20,6 +20,7 @@ public:
     ~SensorController();
 
     void AddSensor(ASensorAdapter *new_sensors[], size_t size);
+    void AddSensor(ASensorAdapter *new_sensor);
 
     /**
      * @brief Function used to determine if measurements need to be taken and if not when they do need to be taken.

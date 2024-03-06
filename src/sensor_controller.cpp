@@ -42,19 +42,19 @@ void SensorController::AddSensor(ASensorAdapter *new_sensors[], size_t size)
 
     // Allocate or expand storage for transitions with exact size
     ASensorAdapter **temp = new ASensorAdapter *[amount_of_sensors + unique_count];
-    if (sensors != NULL)
+    if (sensors != nullptr)
     {
         memcpy(temp, sensors, amount_of_sensors * sizeof(ASensorAdapter *));
         delete[] sensors;
     }
     sensors = temp;
     // Check if memory allocation was successful
-    if (sensors == NULL)
+    if (sensors == nullptr)
     {
         // Serial.print("Out of storage");
         abort();
     }
-    // Add new transitions, avoiding duplicates
+    // Add new sensors, avoiding duplicates
     for (size_t i = 0; i < size; ++i)
     {
         if (!IsDuplicate(new_sensors[i], sensors, amount_of_sensors) &&
@@ -64,6 +64,33 @@ void SensorController::AddSensor(ASensorAdapter *new_sensors[], size_t size)
             amount_of_sensors++;
         }
     }
+}
+
+void SensorController::AddSensor(ASensorAdapter *new_sensor)
+{
+    if (IsDuplicate(new_sensor, this->sensors, amount_of_sensors))
+    {
+        return;
+    }
+
+    // Allocate or expand storage for transitions with exact size
+    ASensorAdapter **temp = new ASensorAdapter *[amount_of_sensors + 1];
+    if (this->sensors != nullptr)
+    {
+        memcpy(temp, new_sensor, 1 * sizeof(ASensorAdapter *));
+        delete[] sensors;
+    }
+    this->sensors = temp;
+    // Check if memory allocation was successful
+    if (sensors == nullptr)
+    {
+        // Serial.print("Out of storage");
+        abort();
+    }
+    // Add new Sensor
+
+    sensors[amount_of_sensors] = new_sensor;
+    amount_of_sensors++;
 }
 
 unsigned long SensorController::TimeUntillNextMeasurement()
