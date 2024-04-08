@@ -4,13 +4,20 @@
 
 static const unsigned long kMaxValueUnsignedLong = ~0ul;
 
-SensorController::SensorController()
+SensorController::SensorController(ASensorAdapter *sensors, size_t amount_of_sensors)
 {
-    this->amount_of_sensors = 0;
+    this->sensors = sensors;
+    this->amount_of_sensors = amount_of_sensors;
 }
 
 SensorController::~SensorController()
 {
+}
+
+void SensorController::SetSensors(ASensorAdapter *sensors, size_t amount_of_sensors)
+{
+    this->sensors = sensors;
+    this->amount_of_sensors = amount_of_sensors;
 }
 
 // void SensorController::AddSensor(ASensorAdapter *new_sensors[], size_t size)
@@ -94,9 +101,9 @@ unsigned long SensorController::TimeUntillNextMeasurement()
     for (size_t i = 0; i < this->amount_of_sensors; i++)
     {
         // Assign shortest measurement frequency of sensors
-        unsigned long frequency = sensors[i]->GetFrequency();
+        unsigned long frequency = sensors[i].GetFrequency();
 
-        unsigned long time_last_measurement = this->sensors[i]->GetTimeLastMeasurement();
+        unsigned long time_last_measurement = this->sensors[i].GetTimeLastMeasurement();
         // If never measured, measure now
         if (time_last_measurement == 0)
         {
@@ -136,58 +143,89 @@ unsigned long SensorController::TimeUntillNextMeasurement()
 
 int SensorController::GetSensorStartupTime()
 {
-    return sensors[current_sensor_index]->GetStartupTime();
+    if (sensors != nullptr)
+    {
+        return sensors[current_sensor_index].GetStartupTime();
+    }
+
+    return -1;
 }
 
 void SensorController::EnableSensor()
 {
-    sensors[current_sensor_index]->Enable();
+    if (sensors != nullptr)
+    {
+        sensors[current_sensor_index].Enable();
+    }
 }
 
 bool SensorController::StartMeasurement()
 {
-    return sensors[current_sensor_index]->StartMeasurement();
+    if (sensors != nullptr)
+    {
+        return sensors[current_sensor_index].StartMeasurement();
+    }
+    return false;
 }
 
 bool SensorController::IsMeasurementFinnished()
 {
-    return sensors[current_sensor_index]->IsMeasurementFinnished();
+    if (sensors != nullptr)
+    {
+        return sensors[current_sensor_index].IsMeasurementFinnished();
+    }
+    return false;
 }
 
 size_t SensorController::GetMeasurementAmount()
 {
-    return sensors[current_sensor_index]->GetMeasurementAmount();
+    if (sensors != nullptr)
+    {
+        return sensors[current_sensor_index].GetMeasurementAmount();
+    }
+    return 0;
 }
 
 bool SensorController::GetMeasurements(uint32_t *measurements)
 {
-    return sensors[current_sensor_index]->GetMeasurements(measurements);
+    if (sensors != nullptr)
+    {
+        return sensors[current_sensor_index].GetMeasurements(measurements);
+    }
+    return false;
 }
 
 bool SensorController::GetMeasurementTypes(RemoteTestSite_MeasurementInfo *measurement_types)
 {
-    return sensors[current_sensor_index]->GetMeasurementTypes(measurement_types);
+    if (sensors != nullptr)
+    {
+        return sensors[current_sensor_index].GetMeasurementTypes(measurement_types);
+    }
+    return false;
 }
 
 void SensorController::DisableSensor()
 {
-    sensors[current_sensor_index]->Disable();
+    if (sensors != nullptr)
+    {
+        sensors[current_sensor_index].Disable();
+    }
 }
 
 void SensorController::SetFrequency(RemoteTestSite_MeasurementInfo measurement_type, unsigned long frequency)
 {
     for (size_t i = 0; i < amount_of_sensors; i++)
     {
-        const size_t amount_of_measurements = sensors[i]->GetMeasurementAmount();
+        const size_t amount_of_measurements = sensors[i].GetMeasurementAmount();
         RemoteTestSite_MeasurementInfo measurement_types[amount_of_measurements];
-        bool succes = sensors[i]->GetMeasurementTypes(measurement_types);
+        bool succes = sensors[i].GetMeasurementTypes(measurement_types);
         if (succes)
         {
             for (size_t j = 0; j < amount_of_measurements; j++)
             {
                 if (measurement_types[j] == measurement_type)
                 {
-                    sensors[i]->SetFrequency(frequency);
+                    sensors[i].SetFrequency(frequency);
                 }
             }
         }
@@ -196,25 +234,28 @@ void SensorController::SetFrequency(RemoteTestSite_MeasurementInfo measurement_t
 
 void SensorController::UpdateTimeLastMeasurement()
 {
-    this->sensors[current_sensor_index]->SetTimeLastMeasurement(millis());
+    if (sensors != nullptr)
+    {
+        this->sensors[current_sensor_index].SetTimeLastMeasurement(millis());
+    }
 }
 
-bool SensorController::IsDuplicate(ASensorAdapter *new_sensor, ASensorAdapter *sensors[], int array_size)
+bool SensorController::IsDuplicate(ASensorAdapter *new_sensor, ASensorAdapter sensors[], int array_size)
 {
     for (int i = 0; i < array_size; ++i)
     {
-        const size_t measurement_amount = sensors[i]->GetMeasurementAmount();
+        const size_t measurement_amount = sensors[i].GetMeasurementAmount();
         const size_t new_measurement_amount = new_sensor->GetMeasurementAmount();
         // Check basic atributes
         if (
             measurement_amount == new_measurement_amount &&
-            sensors[i]->GetStartupTime() == new_sensor->GetStartupTime() &&
-            sensors[i]->GetTimeLastMeasurement() == new_sensor->GetTimeLastMeasurement())
+            sensors[i].GetStartupTime() == new_sensor->GetStartupTime() &&
+            sensors[i].GetTimeLastMeasurement() == new_sensor->GetTimeLastMeasurement())
         {
             // Check measurement types
             RemoteTestSite_MeasurementInfo measurement_types[measurement_amount];
             RemoteTestSite_MeasurementInfo new_measurement_types[new_measurement_amount];
-            sensors[i]->GetMeasurementTypes(measurement_types);
+            sensors[i].GetMeasurementTypes(measurement_types);
             new_sensor->GetMeasurementTypes(new_measurement_types);
             for (size_t j = 0;
                  j < measurement_amount &&
