@@ -11,7 +11,7 @@ ASensorAdapter::ASensorAdapter()
     Disable();
 }
 
-ASensorAdapter::ASensorAdapter(const int enable_pin, const MeasurementType *measurement_types, const size_t measurement_amount, const int start_up_time)
+ASensorAdapter::ASensorAdapter(const int enable_pin, const RemoteTestSite_MeasurementInfo *measurement_types, const size_t measurement_amount, const int start_up_time)
 {
     this->time_last_measurement = 0;
 
@@ -31,7 +31,7 @@ unsigned long ASensorAdapter::GetTimeLastMeasurement()
     return this->time_last_measurement;
 }
 
-bool ASensorAdapter::GetMeasurementTypes(MeasurementType *measurement_types)
+bool ASensorAdapter::GetMeasurementTypes(RemoteTestSite_MeasurementInfo *measurement_types)
 {
     if (measurement_types != nullptr)
     {
@@ -43,6 +43,16 @@ bool ASensorAdapter::GetMeasurementTypes(MeasurementType *measurement_types)
     }
 
     return false;
+}
+
+unsigned long ASensorAdapter::GetFrequency()
+{
+    return this->frequency;
+}
+
+void ASensorAdapter::SetFrequency(unsigned long frequency)
+{
+    this->frequency = frequency;
 }
 
 size_t ASensorAdapter::GetMeasurementAmount()
@@ -85,7 +95,7 @@ bool ASensorAdapter::IsMeasurementFinnished()
     return false;
 }
 
-bool ASensorAdapter::GetMeasurements(float *measurements)
+bool ASensorAdapter::GetMeasurements(uint32_t *measurements)
 {
     return false;
 }

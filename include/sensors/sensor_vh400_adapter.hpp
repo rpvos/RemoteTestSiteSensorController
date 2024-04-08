@@ -17,7 +17,7 @@ public:
 
     bool StartMeasurement() override;
     bool IsMeasurementFinnished() override;
-    bool GetMeasurements(float *measurements) override;
+    bool GetMeasurements(uint32_t *measurements) override;
 };
 
 #endif // SENSOR_VH400_ADAPTER_HPP_

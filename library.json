@@ -24,7 +24,9 @@
     "dependencies": {
         "VH400": "https://github.com/rpvos/VH400.git",
         "Therm200": "https://github.com/rpvos/Therm200.git",
-        "MurataSoilSensor": "https://github.com/rpvos/MurataSoilSensor.git"
+        "MurataSoilSensor": "https://github.com/rpvos/MurataSoilSensor.git",
+        "USR-LG206-P": "https://github.com/rpvos/USR-LG206-P.git",
+        "RemoteTestSiteCommunication": "https://github.com/rpvos/RemoteTestSiteCommuncation.git"
     },
     "frameworks": [
         "Arduino"
@@ -33,7 +35,6 @@
         "atmelavr"
     ],
     "headers": [
-        "measurement_types.hpp",
         "sensor_controller.hpp",
         "sensors/a_sensor_adapter.hpp",
         "sensors/sensor_murata_soil_sensor_adapter.hpp",

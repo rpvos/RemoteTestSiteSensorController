@@ -15,7 +15,7 @@ public:
 
     bool StartMeasurement() override;
     bool IsMeasurementFinnished() override;
-    bool GetMeasurements(float *measurements) override;
+    bool GetMeasurements(uint32_t *measurements) override;
 };
 
 #endif // SENSOR_THERM200_ADAPTER_HPP_

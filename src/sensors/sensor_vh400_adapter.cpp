@@ -1,9 +1,9 @@
 #include "sensors/sensor_vh400_adapter.hpp"
 
 const int kStartUpTime = 1000;
-const MeasurementType kMeasurementTypes[] = {MeasurementType::kMeasurementTypeVwc};
+const RemoteTestSite_MeasurementInfo kMeasurementTypes[] = {RemoteTestSite_MeasurementInfo::RemoteTestSite_MeasurementInfo_MEASUREMENT_INFO_VH400_VWC};
 
-SensorVh400Adapter::SensorVh400Adapter(const uint8_t enable_pin, uint8_t adc_pin, uint8_t adc_resolution, uint8_t reference_voltage) : ASensorAdapter(enable_pin, kMeasurementTypes, sizeof(kMeasurementTypes) / sizeof(MeasurementType), kStartUpTime)
+SensorVh400Adapter::SensorVh400Adapter(const uint8_t enable_pin, uint8_t adc_pin, uint8_t adc_resolution, uint8_t reference_voltage) : ASensorAdapter(enable_pin, kMeasurementTypes, sizeof(kMeasurementTypes) / sizeof(RemoteTestSite_MeasurementInfo), kStartUpTime)
 {
     this->vh400 = Vh400(adc_pin, reference_voltage, adc_resolution);
 }
@@ -24,11 +24,11 @@ bool SensorVh400Adapter::IsMeasurementFinnished()
     return true;
 }
 
-bool SensorVh400Adapter::GetMeasurements(float *measurements)
+bool SensorVh400Adapter::GetMeasurements(uint32_t *measurements)
 {
-    float measurement = vh400.Measure();
     if (measurements != nullptr)
     {
+        uint32_t measurement = vh400.Measure();
         measurements[0] = measurement;
         return true;
     }
