@@ -1,4 +1,5 @@
 #include "sensors/sensor_vh400_adapter.hpp"
+#include <vh400_helper.hpp>
 
 const int kStartUpTime = 1000;
 const RemoteTestSite_MeasurementInfo kMeasurementTypes[] = {RemoteTestSite_MeasurementInfo::RemoteTestSite_MeasurementInfo_MEASUREMENT_INFO_VH400_VWC};
@@ -34,4 +35,9 @@ bool SensorVh400Adapter::GetMeasurements(uint32_t *measurements)
     }
 
     return false;
+}
+
+float SensorVh400Adapter::ConvertToUnit(const uint32_t &value)
+{
+    return Vh400Helper::CalculateVwc(value);
 }

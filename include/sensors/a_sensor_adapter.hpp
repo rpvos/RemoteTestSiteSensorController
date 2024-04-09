@@ -55,6 +55,8 @@ public:
      * @return false
      */
     virtual bool GetMeasurements(uint32_t *measurements) override;
+
+    virtual float ConvertToUnit(const uint32_t &value);
 };
 
 #endif // A_SENSOR_ADAPTER_HPP_

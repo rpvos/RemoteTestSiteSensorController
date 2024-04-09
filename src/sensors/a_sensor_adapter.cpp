@@ -99,3 +99,8 @@ bool ASensorAdapter::GetMeasurements(uint32_t *measurements)
 {
     return false;
 }
+
+float ASensorAdapter::ConvertToUnit(const uint32_t &value)
+{
+    return value;
+}

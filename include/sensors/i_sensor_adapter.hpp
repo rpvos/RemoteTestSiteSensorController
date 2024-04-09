@@ -20,6 +20,7 @@ public:
     virtual bool StartMeasurement() = 0;
     virtual bool IsMeasurementFinnished() = 0;
     virtual bool GetMeasurements(uint32_t *measurements) = 0;
+    virtual float ConvertToUnit(const uint32_t &value) = 0;
 };
 
 #endif // I_SENSOR_ADAPTER_HPP_

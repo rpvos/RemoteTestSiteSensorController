@@ -1,4 +1,5 @@
 #include "sensors/sensor_therm200_adapter.hpp"
+#include <therm200_helper.hpp>
 
 const int kStartUpTime = 1000;
 
@@ -34,4 +35,9 @@ bool SensorTherm200Adapter::GetMeasurements(uint32_t *measurements)
     }
 
     return false;
+}
+
+float SensorTherm200Adapter::ConvertToUnit(const uint32_t &value)
+{
+    return Therm200Helper::CalculateTemperature(value);
 }
