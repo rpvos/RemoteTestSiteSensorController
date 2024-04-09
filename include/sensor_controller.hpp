@@ -9,16 +9,16 @@
 class SensorController
 {
 private:
-    ISensorAdapter *sensors;
+    ISensorAdapter **sensors;
     size_t amount_of_sensors = 0;
     size_t current_sensor_index = -1;
     static bool IsDuplicate(ISensorAdapter *new_sensor, ISensorAdapter *sensors, int array_size);
 
 public:
-    SensorController(ISensorAdapter *sensors = nullptr, size_t amount_of_sensors = 0);
+    SensorController(ISensorAdapter **sensors = nullptr, size_t amount_of_sensors = 0);
     ~SensorController();
 
-    void SetSensors(ISensorAdapter *sensors, size_t amount_of_sensors);
+    void SetSensors(ISensorAdapter **sensors, size_t amount_of_sensors);
 
     // void AddSensor(ASensorAdapter *new_sensors[], size_t size);
     // void AddSensor(ASensorAdapter *new_sensor);
