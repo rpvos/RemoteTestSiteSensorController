@@ -1,10 +1,9 @@
 #if !defined(A_SENSOR_ADAPTER_HPP_)
 #define A_SENSOR_ADAPTER_HPP_
 
-#include "measurement_types.hpp"
-#include <proto/measurement_info.pb.h>
+#include "i_sensor_adapter.hpp"
 
-class ASensorAdapter
+class ASensorAdapter : public ISensorAdapter
 {
 private:
     int start_up_time;
@@ -21,24 +20,16 @@ public:
     ASensorAdapter(const int enable_pin, const RemoteTestSite_MeasurementInfo *measurement_types, const size_t measurement_amount = 0, const int start_up_time = 0);
     ~ASensorAdapter();
 
-    void Enable();
-    void Disable();
-    int GetStartupTime();
-    void SetTimeLastMeasurement(unsigned long time = millis());
-    unsigned long GetTimeLastMeasurement();
-    size_t GetMeasurementAmount();
-    bool GetMeasurementTypes(RemoteTestSite_MeasurementInfo *measurement_types);
+    void Enable() override;
+    void Disable() override;
+    int GetStartupTime() override;
+    void SetTimeLastMeasurement(unsigned long time = millis()) override;
+    unsigned long GetTimeLastMeasurement() override;
+    size_t GetMeasurementAmount() override;
+    bool GetMeasurementTypes(RemoteTestSite_MeasurementInfo *measurement_types) override;
 
-    unsigned long GetFrequency();
-    void SetFrequency(unsigned long frequency);
-
-    /**
-     * @brief Overwrite this function
-     *
-     * @return true
-     * @return false
-     */
-    virtual bool StartMeasurement();
+    unsigned long GetFrequency() override;
+    void SetFrequency(unsigned long frequency) override;
 
     /**
      * @brief Overwrite this function
@@ -46,7 +37,15 @@ public:
      * @return true
      * @return false
      */
-    virtual bool IsMeasurementFinnished();
+    virtual bool StartMeasurement() override;
+
+    /**
+     * @brief Overwrite this function
+     *
+     * @return true
+     * @return false
+     */
+    virtual bool IsMeasurementFinnished() override;
 
     /**
      * @brief Overwrite this function
@@ -55,7 +54,7 @@ public:
      * @return true
      * @return false
      */
-    virtual bool GetMeasurements(uint32_t *measurements);
+    virtual bool GetMeasurements(uint32_t *measurements) override;
 };
 
 #endif // A_SENSOR_ADAPTER_HPP_

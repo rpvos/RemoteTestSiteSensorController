@@ -1,10 +1,9 @@
 #include "sensor_controller.hpp"
-// #include <memory.h>
 #include <Arduino.h>
 
 static const unsigned long kMaxValueUnsignedLong = ~0ul;
 
-SensorController::SensorController(ASensorAdapter *sensors, size_t amount_of_sensors)
+SensorController::SensorController(ISensorAdapter *sensors, size_t amount_of_sensors)
 {
     this->sensors = sensors;
     this->amount_of_sensors = amount_of_sensors;
@@ -14,13 +13,13 @@ SensorController::~SensorController()
 {
 }
 
-void SensorController::SetSensors(ASensorAdapter *sensors, size_t amount_of_sensors)
+void SensorController::SetSensors(ISensorAdapter *sensors, size_t amount_of_sensors)
 {
     this->sensors = sensors;
     this->amount_of_sensors = amount_of_sensors;
 }
 
-// void SensorController::AddSensor(ASensorAdapter *new_sensors[], size_t size)
+// void SensorController::AddSensor(ISensorAdapter *new_sensors[], size_t size)
 // {
 //     // Count the number of unique transitions
 //     int unique_count = 0;
@@ -40,10 +39,10 @@ void SensorController::SetSensors(ASensorAdapter *sensors, size_t amount_of_sens
 //     }
 
 //     // Allocate or expand storage for transitions with exact size
-//     ASensorAdapter **temp = new ASensorAdapter *[amount_of_sensors + unique_count];
+//     ISensorAdapter **temp = new ISensorAdapter *[amount_of_sensors + unique_count];
 //     if (sensors != nullptr)
 //     {
-//         memcpy(temp, sensors, amount_of_sensors * sizeof(ASensorAdapter *));
+//         memcpy(temp, sensors, amount_of_sensors * sizeof(ISensorAdapter *));
 //         delete[] sensors;
 //     }
 //     sensors = temp;
@@ -65,7 +64,7 @@ void SensorController::SetSensors(ASensorAdapter *sensors, size_t amount_of_sens
 //     }
 // }
 
-// void SensorController::AddSensor(ASensorAdapter *new_sensor)
+// void SensorController::AddSensor(ISensorAdapter *new_sensor)
 // {
 //     if (IsDuplicate(new_sensor, this->sensors, amount_of_sensors))
 //     {
@@ -73,10 +72,10 @@ void SensorController::SetSensors(ASensorAdapter *sensors, size_t amount_of_sens
 //     }
 
 //     // Allocate or expand storage for transitions with exact size
-//     ASensorAdapter **temp = new ASensorAdapter *[amount_of_sensors + 1];
+//     ISensorAdapter **temp = new ISensorAdapter *[amount_of_sensors + 1];
 //     if (this->sensors != nullptr)
 //     {
-//         memcpy(temp, new_sensor, 1 * sizeof(ASensorAdapter *));
+//         memcpy(temp, new_sensor, 1 * sizeof(ISensorAdapter *));
 //         delete[] sensors;
 //     }
 //     this->sensors = temp;
@@ -240,7 +239,7 @@ void SensorController::UpdateTimeLastMeasurement()
     }
 }
 
-bool SensorController::IsDuplicate(ASensorAdapter *new_sensor, ASensorAdapter sensors[], int array_size)
+bool SensorController::IsDuplicate(ISensorAdapter *new_sensor, ISensorAdapter sensors[], int array_size)
 {
     for (int i = 0; i < array_size; ++i)
     {
