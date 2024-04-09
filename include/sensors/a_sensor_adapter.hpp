@@ -23,7 +23,7 @@ public:
     void Enable() override;
     void Disable() override;
     int GetStartupTime() override;
-    void SetTimeLastMeasurement(unsigned long time = millis()) override;
+    void SetTimeLastMeasurement(unsigned long time) override;
     unsigned long GetTimeLastMeasurement() override;
     size_t GetMeasurementAmount() override;
     bool GetMeasurementTypes(RemoteTestSite_MeasurementInfo *measurement_types) override;
