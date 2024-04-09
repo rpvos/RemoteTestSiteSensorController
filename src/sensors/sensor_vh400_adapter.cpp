@@ -5,7 +5,7 @@ const RemoteTestSite_MeasurementInfo kMeasurementTypes[] = {RemoteTestSite_Measu
 
 SensorVh400Adapter::SensorVh400Adapter(const uint8_t enable_pin, uint8_t adc_pin, uint8_t adc_resolution, uint8_t reference_voltage) : ASensorAdapter(enable_pin, kMeasurementTypes, sizeof(kMeasurementTypes) / sizeof(RemoteTestSite_MeasurementInfo), kStartUpTime)
 {
-    this->vh400 = Vh400(adc_pin, reference_voltage, adc_resolution);
+    this->vh400 = Vh400(adc_pin);
 }
 
 SensorVh400Adapter::~SensorVh400Adapter()
@@ -28,7 +28,7 @@ bool SensorVh400Adapter::GetMeasurements(uint32_t *measurements)
 {
     if (measurements != nullptr)
     {
-        uint32_t measurement = vh400.Measure();
+        uint16_t measurement = vh400.Measure();
         measurements[0] = measurement;
         return true;
     }

@@ -7,7 +7,7 @@ const RemoteTestSite_MeasurementInfo kMeasurementTypes[] = {
 
 SensorTherm200Adapter::SensorTherm200Adapter(uint8_t enable_pin, uint8_t adc_pin, uint8_t adc_resolution, uint8_t reference_voltage) : ASensorAdapter(enable_pin, kMeasurementTypes, sizeof(kMeasurementTypes) / sizeof(RemoteTestSite_MeasurementInfo), kStartUpTime)
 {
-    this->therm200 = Therm200(adc_pin, reference_voltage, adc_resolution);
+    this->therm200 = Therm200(adc_pin);
 }
 
 SensorTherm200Adapter::~SensorTherm200Adapter()
@@ -28,7 +28,7 @@ bool SensorTherm200Adapter::GetMeasurements(uint32_t *measurements)
 {
     if (measurements != nullptr)
     {
-        uint32_t measurement = therm200.Measure();
+        uint16_t measurement = therm200.Measure();
         measurements[0] = measurement;
         return true;
     }
