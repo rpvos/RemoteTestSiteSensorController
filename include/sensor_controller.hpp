@@ -12,7 +12,7 @@ private:
     ISensorAdapter *sensors;
     size_t amount_of_sensors = 0;
     size_t current_sensor_index = -1;
-    static bool IsDuplicate(ISensorAdapter *new_sensor, ISensorAdapter sensors[], int array_size);
+    static bool IsDuplicate(ISensorAdapter *new_sensor, ISensorAdapter *sensors, int array_size);
 
 public:
     SensorController(ISensorAdapter *sensors = nullptr, size_t amount_of_sensors = 0);

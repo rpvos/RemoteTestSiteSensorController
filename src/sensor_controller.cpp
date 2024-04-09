@@ -239,7 +239,7 @@ void SensorController::UpdateTimeLastMeasurement()
     }
 }
 
-bool SensorController::IsDuplicate(ISensorAdapter *new_sensor, ISensorAdapter sensors[], int array_size)
+bool SensorController::IsDuplicate(ISensorAdapter *new_sensor, ISensorAdapter *sensors, int array_size)
 {
     for (int i = 0; i < array_size; ++i)
     {
